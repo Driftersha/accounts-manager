@@ -22,17 +22,25 @@ export const useAccountsStore = defineStore('accounts', {
         labels: [],
         type: 'Локальная',
         login: '',
-        password: '',
+        password: null,
       })
     },
-    removeAccount(id: number) {
-      this.accounts = this.accounts.filter(acc => acc.id !== id)
-    },
+
     updateAccount(account: Account) {
       const index = this.accounts.findIndex(a => a.id === account.id)
-      if (index !== -1) this.accounts[index] = account
+      if (index !== -1) {
+        if (account.type === 'LDAP') {
+          account.password = null
+        }
+        this.accounts[index] = { ...account }
+      }
+    },
+
+    removeAccount(id: number) {
+      this.accounts = this.accounts.filter(acc => acc.id !== id)
     },
   },
   persist: true,
 })
+
 
