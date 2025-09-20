@@ -1,13 +1,20 @@
 <template>
   <div class="accounts">
     <header class="accounts__header">
-      <h2 class="accounts__title">Учётные записи</h2>
+   <div class="container">
+     <div class="accounts__header-wrapper">
+        <h1 class="accounts__title">Учётные записи</h1>
       <button type="button" class="accounts__add-btn" @click="addAccount">
         +
       </button>
+     </div>
+   </div>
     </header>
 
-    <div class="accounts__hint">
+  <main>
+   <section class="accounts__section">
+    <div class="container">
+         <div class="accounts__hint">
       <span class="accounts__hint-icon">?</span>
       <span class="accounts__hint-text">
         Для указания нескольких меток для одной пары логин/пароль используйте
@@ -35,6 +42,9 @@
         />
       </tbody>
     </table>
+    </div>
+   </section>
+  </main>
   </div>
 </template>
 
@@ -66,10 +76,15 @@ function onRemove(id: number) {
 }
 
 .accounts__header {
-  display: flex;
+  padding: 20px 10px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgb(0, 0, 0);
+}
+
+.accounts__header-wrapper {
+ display: flex;
   align-items: flex-start;
   gap: 20px;
-  margin-bottom: 20px;
 }
 
 .accounts__title {

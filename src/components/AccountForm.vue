@@ -7,9 +7,10 @@
           class="accounts__input-field"
           v-model="labelsInput"
           @blur="handleLabels"
-          placeholder="Введите метки через ;"
+          placeholder="Значение"
           maxlength="50"
           :class="{ 'accounts__input-field--error': errors.labels }"
+          :data-testid="`labels-input-${localAccount.id}`"
         />
         <span class="accounts__tooltip-icon">?</span>
         <span class="accounts__tooltip-text">
@@ -20,7 +21,7 @@
       </div>
     </td>
 
-    <!-- Тип -->
+    <!-- Тип учетной записи -->
     <td class="accounts__cell">
       <div class="accounts__field-wrapper">
         <select
@@ -28,6 +29,7 @@
           v-model="localAccount.type"
           @change="handleTypeChange"
           :class="{ 'accounts__select--error': errors.type }"
+          :data-testid="`type-select-${localAccount.id}`"
         >
           <option value="Локальная">Локальная</option>
           <option value="LDAP">LDAP</option>
@@ -45,6 +47,7 @@
           placeholder="Логин"
           maxlength="100"
           :class="{ 'accounts__input-field--error': errors.login }"
+          :data-testid="`login-input-${localAccount.id}`"
         />
         <span v-if="errors.login" class="accounts__error-text">
           Логин обязателен, максимум 100 символов
@@ -52,10 +55,10 @@
       </div>
     </td>
 
-    <!-- Пароль (если Локальная) -->
+    <!-- Пароль (только для Локальной) -->
     <td
       v-if="localAccount.type === 'Локальная'"
-      class="accounts__cell accounts__password-cell"
+      class="accounts__cell"
     >
       <div class="accounts__field-wrapper">
         <input
@@ -66,25 +69,33 @@
           placeholder="Пароль"
           maxlength="100"
           :class="{ 'accounts__input-field--error': errors.password }"
+          :data-testid="`password-input-${localAccount.id}`"
         />
         <button
           type="button"
           class="accounts__show-pass-btn"
           @click="togglePassword"
+          :data-testid="`toggle-pass-btn-${localAccount.id}`"
         >
           {{ showPassword ? '🙈' : '👁' }}
         </button>
-        <span v-if="errors.password" class="accounts__error-text">
-          Пароль обязателен, максимум 100 символов
-        </span>
+        <span
+  class="accounts__error-text"
+  :data-testid="`login-error-${localAccount.id}`"
+  v-if="errors.login"
+>
+  Логин обязателен, максимум 100 символов
+</span>
+
       </div>
     </td>
 
     <!-- Кнопка удаления -->
-    <td class="accounts__cell">
+    <td class="accounts__cell accounts__cell-s">
       <button
         class="accounts__delete-btn"
         type="button"
+        :data-testid="`delete-btn-${localAccount.id}`"
         @click="$emit('remove', localAccount.id)"
       >
         🗑
@@ -92,6 +103,7 @@
     </td>
   </tr>
 </template>
+
 
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue';
@@ -158,8 +170,14 @@ function togglePassword() {
 
 <style scoped>
 .accounts__cell {
-  padding: 5px;
-  position: relative;
+ padding: 5px 5px 15px;
+ position: relative;
+}
+
+.accounts__cell-s {
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 15px;
 }
 
 .accounts__field-wrapper {
@@ -170,7 +188,7 @@ function togglePassword() {
 .accounts__input-field,
 .accounts__select {
   width: 100%;
-  padding: 6px;
+  padding: 6px 27px 6px 6px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
@@ -184,13 +202,10 @@ function togglePassword() {
 
 .accounts__error-text {
   color: red;
-  font-size: 12px;
+  font-size: 10px;
   margin-top: 2px;
   display: block;
-  /* position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%); */
+  position: absolute;
 }
 
 .accounts__delete-btn {
@@ -199,12 +214,9 @@ function togglePassword() {
   border: none;
   cursor: pointer;
   font-size: 19px;
+  padding: 0;
 }
 
-.accounts__password-cell {
-  display: flex;
-  align-items: center;
-}
 
 .accounts__show-pass-btn {
   margin-left: 5px;
@@ -213,8 +225,9 @@ function togglePassword() {
   cursor: pointer;
   font-size: 16px;
   position: absolute;
-  top: 2px;
+  top: 4px;
   right: 10px;
+  padding: 0;
 }
 
 .accounts__tooltip-icon {
